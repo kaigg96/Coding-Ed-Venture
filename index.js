@@ -1,3 +1,6 @@
+// ----------------------------------------------------------------
+// IMPORTS
+
 import Player from "./player.js";
 import Ground from "./ground.js";
 import ObstacleController from "./ObstacleController.js";
@@ -6,25 +9,29 @@ import Score from "./score.js";
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// ----------------------------------------------------------------
+// CONSTANTS
+
 const GAME_SPEED_START = 1;
 const GAME_SPEED_INCREMENT = 0.00001;
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 200;
-const PLAYER_WIDTH = 88 / 1.5; 
-const PLAYER_HEIGHT = 94 / 1.5;
+const PLAYER_WIDTH = 88 / 1.75; 
+const PLAYER_HEIGHT = 94 / 1.75;
 const MAX_JUMP_HEIGHT = GAME_HEIGHT;
 const MIN_JUMP_HEIGHT = 150;
-const GROUND_WIDTH = 2400;
-const GROUND_HEIGHT = 24;
+const GROUND_WIDTH = 859;
+const GROUND_HEIGHT = 2;
 const GROUND_AND_OBSTACLE_SPEED = 0.5;
 
 const OBSTACLE_CONFIG = [
-    {width: 48 / 1.5, height: 100 / 1.5, image: "images/cactus_1.png"},
-    {width: 98 / 1.5, height: 100 / 1.5, image: "images/cactus_2.png"},
+    {width: 48 / 1.5, height: 100 / 1.5, image: "images/obstacle_1.png"},
+    {width: 98 / 1.5, height: 100 / 1.5, image: "images/obstacle_2.png"},
 ];
 
-// Game objects
+// ----------------------------------------------------------------
+// GAME OBJECTS
 let player = null;
 let ground = null;
 let obstacleController = null;
@@ -37,6 +44,16 @@ let gameOver = false;
 let hasAddedEventListenersForRestart = false;
 let waitingToStart = true;
 
+// ----------------------------------------------------------------
+// FUNCTIONS
+
+/**
+ * Creates the necessary sprites for the game, including the player, ground, obstacles, and score.
+ * It calculates the scaled dimensions for the player and ground based on the scaleRatio,
+ * and creates the corresponding objects using the provided context and game settings.
+ * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+ * @param {number} scaleRatio - The scaling ratio for adapting to different screen sizes.
+ */
 function createSprites() {
     const scaledPlayerWidth = PLAYER_WIDTH * scaleRatio;
     const scaledPlayerHeight = PLAYER_HEIGHT * scaleRatio;
@@ -78,6 +95,7 @@ function createSprites() {
     score = new Score(ctx, scaleRatio);
 }
 
+// Set the screen size based on the window dimensions
 function setScreen() {
     scaleRatio = getScaleRatio();
     canvas.width = GAME_WIDTH * scaleRatio;
@@ -89,8 +107,10 @@ function setScreen() {
 setScreen();
 window.addEventListener("resize", setScreen);
 
-// Returns factor to multiply width/height to fit screen dimensions
-// Used to apply screen sizing
+/**
+ * Returns the factor to multiply width/height to fit screen dimensions.
+ * @returns {number} The scaling ratio to fit the game canvas on the screen.
+ */
 function getScaleRatio() {
     const screenHeight = Math.min(window.innerHeight, document.documentElement.clientHeight); //min between browser content area and viewport height
     const screenWidth = Math.min(window.innerWidth, document.documentElement.clientWidth); //min between browser content area and viewport width
@@ -103,16 +123,17 @@ function getScaleRatio() {
     }
 }
 
-// display game over screen
+// Display game over screen
 function showGameOver() {
     const fontSize = 70 * scaleRatio;
-    ctx.font = `${fontSize}px Verdana`;
-    ctx.fillStyle = "grey";
+    ctx.font = `${fontSize}px Georgia`;
+    ctx.fillStyle = "red";
     const x = canvas.width / 4.5;
     const y = canvas.height / 2;
     ctx.fillText("GAME OVER", x, y);
   }
 
+// Sets up the game for a reset after game over
 function setupGameReset() {
     if (!hasAddedEventListenersForRestart) {
         hasAddedEventListenersForRestart = true; 
@@ -124,6 +145,7 @@ function setupGameReset() {
     }
 }
 
+// Resets game state after game over
 function reset() {
     hasAddedEventListenersForRestart = false;
     gameOver = false;
@@ -134,26 +156,36 @@ function reset() {
     gameSpeed = GAME_SPEED_START;
 }
 
+// Displays the "PRESS SPACE TO START" message on the canvas
 function showStartGameText() { 
     const fontSize = 50 * scaleRatio;
-    ctx.font = `${fontSize}px Verdana`;
-    ctx.fillStyle = "grey";
+    ctx.font = `${fontSize}px Georgia`;
+    ctx.fillStyle = "blue";
     const x = canvas.width / 7.5;
-    const y = canvas.height / 2;
+    const y = canvas.height / 1.75;
     ctx.fillText("PRESS SPACE TO START", x, y);
 }
 
+/**
+ * Increment the game speed according to the elapsed time since the last frame.
+ * @param {number} frameTimeDelta - The time difference (in milliseconds) between the current and previous frames.
+ */
 function updateGameSpeed(frameTimeDelta) {
     gameSpeed += frameTimeDelta * GAME_SPEED_INCREMENT;
 }
 
-//
+// Clear the screen for next frame rendering
 function clearScreen() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Updates the screen 
+/**
+ * Main game loop; updates and renders the game.
+ * This function is responsible for the continuous execution of the game, rendering the game objects,
+ * updating their positions and interactions, and managing the game state.
+ * @param {DOMHighResTimeStamp} currentTime - The current timestamp representing the start of the current frame.
+ */
 function gameLoop(currentTime) {
     console.log(gameSpeed);
     // Init
@@ -181,23 +213,23 @@ function gameLoop(currentTime) {
         setupGameReset();
         score.setHighScore();
     }
-    // Draw game objects
-    ground.draw();
-    obstacleController.draw();
-    player.draw();
-    score.draw();
 
-    if (gameOver) {
-        showGameOver();
-    }
-
-    if (waitingToStart) {
-        showStartGameText();
-    }
-
-    requestAnimationFrame(gameLoop);
-
-}
+     // Draw game objects
+     ground.draw();
+     obstacleController.draw();
+     player.draw();
+     score.draw();
+ 
+     if (gameOver) {
+         showGameOver();
+     }
+ 
+     if (waitingToStart) {
+         showStartGameText();
+     }
+     
+     requestAnimationFrame(gameLoop);
+ }
 
 // Calls method when it's ready to repaint the screen
 requestAnimationFrame(gameLoop);

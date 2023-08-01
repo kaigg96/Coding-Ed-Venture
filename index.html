@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!--
+    This file sets up the game canvas and includes the main JavaScript file.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L2C game</title>
     <style>
+    /* CSS styles for the game canvas and body */
     * {
         padding: 0px; 
         margin: 0px; 
@@ -15,13 +19,11 @@
         justify-content: center;
         height: 100vh;
     }
-        canvas {
-            border: 2px solid grey;
-        }
-
+    canvas {
+        border: 2px solid grey;
+    }
     </style> 
     <script src="index.js" defer type="module"></script>
-        
 </head>
 <body>
     <canvas id="game"></canvas>

@@ -1,5 +1,7 @@
+/**
+ * Represents the player character in the game.
+ */
 export default class Player {
-
     WALK_ANIMATION_TIMER = 200;
     walkAnimationTimer = this.WALK_ANIMATION_TIMER;
     dinoRunImages = [];
@@ -10,7 +12,16 @@ export default class Player {
     JUMP_SPEED  = 0.6;
     GRAVITY = 0.4;
 
-    constructor(ctx, width, height, minJumpHeight,  maxJumpHeight, scaleRatio) {
+    /**
+     * Create a new Player object.
+     * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+     * @param {number} width - The width of the player.
+     * @param {number} height - The height of the player.
+     * @param {number} minJumpHeight - The minimum height to which the player can jump.
+     * @param {number} maxJumpHeight - The maximum height to which the player can jump.
+     * @param {number} scaleRatio - The scaling ratio for adapting to different screen sizes.
+     */
+    constructor(ctx, width, height, minJumpHeight, maxJumpHeight, scaleRatio) {
         this.ctx = ctx;
         this.canvas = ctx.canvas;
         this.width = width;
@@ -19,8 +30,8 @@ export default class Player {
         this.maxJumpHeight = maxJumpHeight;
         this.scaleRatio = scaleRatio;
 
-        this.x = 10 * scaleRatio; // start 10px (scaled) from left
-        this.y = this.canvas.height - this.height - 1.5 * scaleRatio; // start 1.5px (scaled) from bottom
+        this.x = 10 * scaleRatio; // Start 10px (scaled) from the left
+        this.y = this.canvas.height - this.height - 1.5 * scaleRatio; // Start 1.5px (scaled) from the bottom
         this.yStandingPos = this.y;
 
         this.stillImage = new Image();
@@ -28,31 +39,44 @@ export default class Player {
         this.image = this.stillImage;
 
         const dinoRunImage1 = new Image();
-        dinoRunImage1.src = "images/dino_run1.png";
+        dinoRunImage1.src = "images/run1.png";
         const dinoRunImage2 = new Image();
-        dinoRunImage2.src = "images/dino_run2.png";
+        dinoRunImage2.src = "images/run2.png";
         this.dinoRunImages.push(dinoRunImage1);
         this.dinoRunImages.push(dinoRunImage2);
 
-        //keyboard EL
-        window.removeEventListener("keydown", this.keydown); // remove first to prevent duplication
+        // Keyboard event listeners
+        window.removeEventListener("keydown", this.keydown); // Remove first to prevent duplication
         window.removeEventListener("keyup", this.keyup);
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
     }
 
-    keydown = (event)=> {
-        if(event.code === "Space") {
+    /**
+     * Event handler for the "keydown" event. Sets the `jumpPressed` flag when Space key is pressed.
+     * @param {KeyboardEvent} event - The keyboard event object.
+     */
+    keydown = (event) => {
+        if (event.code === "Space") {
             this.jumpPressed = true;
         }
     }
 
-    keyup = (event)=> {
-        if(event.code === "Space") {
+    /**
+     * Event handler for the "keyup" event. Clears the `jumpPressed` flag when Space key is released.
+     * @param {KeyboardEvent} event - The keyboard event object.
+     */
+    keyup = (event) => {
+        if (event.code === "Space") {
             this.jumpPressed = false;
         }
     }
 
+    /**
+     * Update the player's state based on game speed and frame time.
+     * @param {number} gameSpeed - The current game speed multiplier.
+     * @param {number} frameTimeDelta - The time elapsed since the last frame update.
+     */
     update(gameSpeed, frameTimeDelta) {
         this.run(gameSpeed, frameTimeDelta);
         if (this.jumpPressed) {
@@ -61,23 +85,27 @@ export default class Player {
         this.jump(frameTimeDelta);
     }
 
+    /**
+     * Handle the player's jumping behavior.
+     * @param {number} frameTimeDelta - The time elapsed since the last frame update.
+     */
     jump(frameTimeDelta) {
         if (this.jumpPressed) {
             this.jumpInProgress = true;
         }
 
-        // if player has not reached min jump height, let go of jump, or hit the top of the screen keep ascending
+        // If the player has not reached the min jump height, let go of jump, or hit the top of the screen, keep ascending.
         if (this.jumpInProgress && !this.falling) {
             if ((this.y > this.canvas.height - this.minJumpHeight) || ((this.y > this.canvas.height - this.maxJumpHeight) && this.jumpPressed)) {
                 this.y -= this.JUMP_SPEED * this.scaleRatio * frameTimeDelta; 
             } else {
                 this.falling = true;
             }
-        // else descend if to the base y pos
+        // Else, descend to the base y position.
         } else {
             if (this.y < this.yStandingPos) {
                 this.y += this.GRAVITY * this.scaleRatio * frameTimeDelta;
-                if ( this.y + this.height > this.canvas.height) {
+                if (this.y + this.height > this.canvas.height) {
                     this.y = this.yStandingPos;
                 }
             } else {
@@ -87,6 +115,11 @@ export default class Player {
         }
     }
 
+    /**
+     * Handle the player's running animation.
+     * @param {number} gameSpeed - The current game speed multiplier.
+     * @param {number} frameTimeDelta - The time elapsed since the last frame update.
+     */
     run(gameSpeed, frameTimeDelta) {
         if (this.walkAnimationTimer <= 0) {
             if (this.image === this.dinoRunImages[0]) {
@@ -99,6 +132,7 @@ export default class Player {
         this.walkAnimationTimer -= gameSpeed * frameTimeDelta;
     }
 
+    // Draw the player on the canvas.
     draw() {
         this.ctx.drawImage(
             this.image, 
@@ -108,5 +142,4 @@ export default class Player {
             this.height
         );
     }
-
 }
