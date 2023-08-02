@@ -24,10 +24,10 @@ const MIN_JUMP_HEIGHT = 150;
 const GROUND_WIDTH = 859;
 const GROUND_HEIGHT = 2;
 const GROUND_AND_OBSTACLE_SPEED = 0.5;
+const CUTSCENE_INIT_SCORE = 25;
 
-const OBSTACLE_CONFIG = [
-    {width: 48 / 1.5, height: 100 / 1.5, image: "images/obstacle_1.png"},
-    {width: 98 / 1.5, height: 100 / 1.5, image: "images/obstacle_2.png"},
+let OBSTACLE_CONFIG = [
+    {width: 50, height: 75, image: "images/obstacle_1.png"},
 ];
 
 // ----------------------------------------------------------------
@@ -43,6 +43,8 @@ let gameSpeed = GAME_SPEED_START;
 let gameOver = false;
 let hasAddedEventListenersForRestart = false;
 let waitingToStart = true;
+let isCutscenePlaying = false;
+let cutscenePassed = false;
 
 // ----------------------------------------------------------------
 // FUNCTIONS
@@ -80,17 +82,7 @@ function createSprites() {
         scaleRatio
     );
 
-    const obstacleImages = OBSTACLE_CONFIG.map(obstacle => {
-        const image = new Image();
-        image.src = obstacle.image;
-        return {
-            image:image,
-            width: obstacle.width * scaleRatio,
-            height: obstacle.height * scaleRatio
-        };
-    });
-
-    obstacleController = new ObstacleController(ctx, obstacleImages, scaleRatio, GROUND_AND_OBSTACLE_SPEED);
+    obstacleController = setObstacleImages();
 
     score = new Score(ctx, scaleRatio);
 }
@@ -106,6 +98,25 @@ function setScreen() {
 // Apply dynamic screen sizing
 setScreen();
 window.addEventListener("resize", setScreen);
+
+/**
+ * Generates an array of obstacle images with scaled dimensions based on the current scaleRatio.
+ * @returns {ObstacleController} The initialized ObstacleController instance with the scaled obstacle images.
+ */
+function setObstacleImages() {
+    const obstacleImages = OBSTACLE_CONFIG.map(obstacle => {
+        const image = new Image();
+        image.src = obstacle.image;
+        return {
+            image:image,
+            width: 50 * scaleRatio,
+            height: 75 * scaleRatio
+        };
+    });
+
+    obstacleController = new ObstacleController(ctx, obstacleImages, scaleRatio, GROUND_AND_OBSTACLE_SPEED);
+    return obstacleController;
+}
 
 /**
  * Returns the factor to multiply width/height to fit screen dimensions.
@@ -133,15 +144,17 @@ function showGameOver() {
     ctx.fillText("GAME OVER", x, y);
   }
 
-// Sets up the game for a reset after game over
-function setupGameReset() {
+/**
+ * Sets up the game for a reset after game over or cutscene.
+ * @param {number} delayTime - The delay time (in milliseconds) before the event listener is added.
+ *                             This delay prevents immediate accidental restarts.
+ */
+function setupGameReset(delayTime) {
     if (!hasAddedEventListenersForRestart) {
-        hasAddedEventListenersForRestart = true; 
-        // delay by 1s to prevent accidental restart
+        hasAddedEventListenersForRestart = true;
         setTimeout(() =>{
             window.addEventListener("keyup", reset, {once: true});
-        }, 1000);
-        
+        }, delayTime);
     }
 }
 
@@ -150,6 +163,7 @@ function reset() {
     hasAddedEventListenersForRestart = false;
     gameOver = false;
     waitingToStart = false; 
+    isCutscenePlaying = false;
     ground.reset();
     obstacleController.reset(); 
     score.reset();
@@ -168,16 +182,72 @@ function showStartGameText() {
 
 /**
  * Increment the game speed according to the elapsed time since the last frame.
+ * Pause the game if the score hits 250 and trigger the cutscene.
  * @param {number} frameTimeDelta - The time difference (in milliseconds) between the current and previous frames.
  */
 function updateGameSpeed(frameTimeDelta) {
-    gameSpeed += frameTimeDelta * GAME_SPEED_INCREMENT;
+    if (!isCutscenePlaying) {
+        gameSpeed += frameTimeDelta * GAME_SPEED_INCREMENT;
+
+        if (score.getScore() >= CUTSCENE_INIT_SCORE && cutscenePassed == false) {
+            // Pause the game
+            isCutscenePlaying = true;
+        }
+    }
+}
+
+/**
+ * Renders the cutscene on the canvas.
+ * @param {number} startTime - The timestamp representing the start of the cutscene.
+function renderCutscene(startTime) {
+    const currentTime = performance.now();
+    const elapsedTime = currentTime - startTime;
+
+    // Render cutscene content
+    displayCutscene();
+
+    if (elapsedTime < 5000) {
+        // Continue rendering the cutscene until 5 seconds have passed
+        requestAnimationFrame(() => renderCutscene(startTime));
+    } else {
+        // Cutscene duration reached, resume the game
+        isCutscenePlaying = false;
+        cutscenePassed = true;
+        resumeGame();
+    }
+}
+
+// Restart paused game
+function resumeGame() {
+    setupGameReset(0);
+    score.setHighScore();
+}
+
+ */
+
+
+// Displays the cutscene
+function displayCutscene() {
+    const fontSize = 70 * scaleRatio;
+    ctx.font = `${fontSize}px Georgia`;
+    ctx.fillStyle = "yellow";
+    const x = canvas.width / 10;
+    const y = canvas.height / 2;
+    ctx.fillText("THIS IS CUTSCENE", x, y);
 }
 
 // Clear the screen for next frame rendering
 function clearScreen() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+// Add an obstacle to the 
+function addObstacle(images) {
+    for (let i = 0; i < images.length; i++) {
+        OBSTACLE_CONFIG.push({width:50, height:75, image:images[i]});
+    }
+    obstacleController = setObstacleImages();
 }
 
 /**
@@ -187,7 +257,6 @@ function clearScreen() {
  * @param {DOMHighResTimeStamp} currentTime - The current timestamp representing the start of the current frame.
  */
 function gameLoop(currentTime) {
-    console.log(gameSpeed);
     // Init
     if (prevTime == null) {
         prevTime = currentTime;
@@ -199,7 +268,7 @@ function gameLoop(currentTime) {
     prevTime = currentTime;
     clearScreen();
 
-    if (!gameOver && !waitingToStart) {
+    if (!gameOver && !waitingToStart && !isCutscenePlaying) {
         // Update game objects
         ground.update(gameSpeed, frameTimeDelta);
         obstacleController.update(gameSpeed, frameTimeDelta); 
@@ -210,9 +279,16 @@ function gameLoop(currentTime) {
 
     if (!gameOver && obstacleController.collideWith(player)) {
         gameOver = true;
-        setupGameReset();
+        setupGameReset(500);
         score.setHighScore();
     }
+
+    if (isCutscenePlaying) {
+        displayCutscene();
+        setupGameReset(5000);
+        addObstacle(["images/obstacle_1.png", "images/fence.png"]);
+        cutscenePassed = true;
+     }
 
      // Draw game objects
      ground.draw();

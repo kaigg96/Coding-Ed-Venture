@@ -37,6 +37,10 @@ export default class Score {
         }
     }
 
+    getScore() {
+        return this.score;
+    }
+
     // Draw the current score and high score on the canvas. 
     draw() {
         const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
