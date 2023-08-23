@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0%;
+            padding: 2%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            border-radius: 10vh;
+            padding: 5%;
+            margin-top: 1.5%;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 4rem;
+            margin-bottom: 5%;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5vh;
+        }
+
+        .button {
+            padding: 8%;
+            font-size: 3rem;
+            color: white;
+            border: none;
+            border-radius: 5vh;
+            cursor: pointer;
+        }
+
+        #Abstraction {
+            background-color: #3498db; 
+        }
+
+        #Encapsulation {
+            background-color: #e74c3c; 
+        }
+
+        #Inheiritance {
+            background-color: #2ecc71; 
+        }
+
+        #Polymorphism {
+            background-color: #f39c12; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Welcome to Coding Ed-Venture!</div>
+        <div class="button-grid">
+            <button class="button" id="Abstraction">Abstraction</button>
+            <button class="button" id="Encapsulation">Encapsulation</button>
+            <button class="button" id="Inheiritance">Inheiritance</button>
+            <button class="button" id="Polymorphism">Polymorphism</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("Abstraction").addEventListener("click", function() {
+            window.location.href = "index.html"; // Redirect to the game page
+        });
+    </script>
+</body>
+</html>

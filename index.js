@@ -196,44 +196,14 @@ function updateGameSpeed(frameTimeDelta) {
     }
 }
 
-/**
- * Renders the cutscene on the canvas.
- * @param {number} startTime - The timestamp representing the start of the cutscene.
-function renderCutscene(startTime) {
-    const currentTime = performance.now();
-    const elapsedTime = currentTime - startTime;
-
-    // Render cutscene content
-    displayCutscene();
-
-    if (elapsedTime < 5000) {
-        // Continue rendering the cutscene until 5 seconds have passed
-        requestAnimationFrame(() => renderCutscene(startTime));
-    } else {
-        // Cutscene duration reached, resume the game
-        isCutscenePlaying = false;
-        cutscenePassed = true;
-        resumeGame();
-    }
-}
-
-// Restart paused game
-function resumeGame() {
-    setupGameReset(0);
-    score.setHighScore();
-}
-
- */
-
-
 // Displays the cutscene
 function displayCutscene() {
     const fontSize = 70 * scaleRatio;
     ctx.font = `${fontSize}px Georgia`;
     ctx.fillStyle = "yellow";
-    const x = canvas.width / 10;
+    const x = canvas.width / 4;
     const y = canvas.height / 2;
-    ctx.fillText("THIS IS CUTSCENE", x, y);
+    ctx.fillText("CUTSCENE", x, y);
 }
 
 // Clear the screen for next frame rendering
