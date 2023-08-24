@@ -38,44 +38,70 @@
 
         .button {
             padding: 8%;
-            font-size: 3rem;
             color: white;
             border: none;
             border-radius: 5vh;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        #Abstraction {
+        .button .label {
+            font-size: 3rem;
+            margin-bottom: 5px;
+        }
+
+        .button .subtext {
+            display: block;
+            font-size: 1rem;
+            margin-top: 2%
+        }
+
+        #Inheritance {
             background-color: #3498db; 
+        }
+
+        #Polymorphism {
+            background-color: #f39c12; 
         }
 
         #Encapsulation {
             background-color: #e74c3c; 
         }
 
-        #Inheiritance {
+        #Abstraction{
             background-color: #2ecc71; 
         }
 
-        #Polymorphism {
-            background-color: #f39c12; 
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="title">Welcome to Coding Ed-Venture!</div>
         <div class="button-grid">
-            <button class="button" id="Abstraction">Abstraction</button>
-            <button class="button" id="Encapsulation">Encapsulation</button>
-            <button class="button" id="Inheiritance">Inheiritance</button>
-            <button class="button" id="Polymorphism">Polymorphism</button>
+            <button class="button" id="Inheritance">
+                <span class="label">Inheritance</span>
+            </button>
+            <button class="button" id="Polymorphism">
+                <span class="label">Polymorphism</span>
+                <span class="subtext">Coming soon!</span>
+            </button>
+            <button class="button" id="Encapsulation">
+                <span class="label">Encapsulation</span>
+                <span class="subtext">Coming soon!</span>
+            </button>
+            <button class="button" id="Abstraction">
+                <span class="label">Abstraction</span>
+                <span class="subtext">Coming soon!</span>
+            </button>
         </div>
     </div>
 
     <script>
-        document.getElementById("Abstraction").addEventListener("click", function() {
-            window.location.href = "index.html"; // Redirect to the game page
+        document.getElementById("Inheritance").addEventListener("click", function() {
+            window.location.href = "inheritance/inheritance.html"; // Redirect to the game page
         });
     </script>
 </body>
