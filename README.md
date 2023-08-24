@@ -1,6 +1,3 @@
-# L2C-game
+# Coding Ed-Venture
 
-A web game designed to teach kids basic coding principles
-
-The base game was developed with help from the following tutorial:
-https://www.youtube.com/watch?v=ooru4pyEv1I
+A web game designed to teach kids basic object oriented programming principles
