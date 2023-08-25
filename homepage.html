@@ -44,7 +44,11 @@
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            align-items: center;
+        }
+
+        .button .label-container {
+            display: flex;
             align-items: center;
         }
 
@@ -57,6 +61,11 @@
             display: block;
             font-size: 1rem;
             margin-top: 2%
+        }
+
+        .button img {
+            width: 20%;
+            height: 80%;
         }
 
         #Inheritance {
@@ -82,18 +91,27 @@
         <div class="title">Welcome to Coding Ed-Venture!</div>
         <div class="button-grid">
             <button class="button" id="Inheritance">
-                <span class="label">Inheritance</span>
+                <div class="label-container">
+                    <span class="label">Inheritance</span>
+                    <img src="./inheritance/images/run1.png" alt="InheritanceImg">
+                </div>
             </button>
             <button class="button" id="Polymorphism">
-                <span class="label">Polymorphism</span>
+                <div class="label-container">
+                    <span class="label">Polymorphism</span>
+                </div>
                 <span class="subtext">Coming soon!</span>
             </button>
             <button class="button" id="Encapsulation">
-                <span class="label">Encapsulation</span>
+                <div class="label-container">
+                    <span class="label">Encapsulation</span>
+                </div>
                 <span class="subtext">Coming soon!</span>
             </button>
             <button class="button" id="Abstraction">
-                <span class="label">Abstraction</span>
+                <div class="label-container">
+                    <span class="label">Abstraction</span>
+                </div>
                 <span class="subtext">Coming soon!</span>
             </button>
         </div>

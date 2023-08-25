@@ -4,7 +4,8 @@
 export default class Player {
     WALK_ANIMATION_TIMER = 200;
     walkAnimationTimer = this.WALK_ANIMATION_TIMER;
-    dinoRunImages = [];
+    runImages = [];
+    currentRunImageIndex = 0;
 
     jumpPressed = false;  
     jumpInProgress = false;
@@ -34,16 +35,21 @@ export default class Player {
         this.y = this.canvas.height - this.height - 1.5 * scaleRatio; // Start 1.5px (scaled) from the bottom
         this.yStandingPos = this.y;
 
-        this.stillImage = new Image();
-        this.stillImage.src = "images/standing_still.png";
-        this.image = this.stillImage;
+        this.jumpImage = new Image();
+        this.jumpImage.src = "images/jumping.png";
 
-        const dinoRunImage1 = new Image();
-        dinoRunImage1.src = "images/run1.png";
-        const dinoRunImage2 = new Image();
-        dinoRunImage2.src = "images/run2.png";
-        this.dinoRunImages.push(dinoRunImage1);
-        this.dinoRunImages.push(dinoRunImage2);
+        const runImage1 = new Image();
+        runImage1.src = "images/run1.png";
+        const runImage3 = new Image();
+        runImage3.src = "images/run3.png";
+        const runImage5 = new Image();
+        runImage5.src = "images/run5.png";
+
+        this.runImages.push(runImage1);
+        this.runImages.push(runImage3);
+        this.runImages.push(runImage5);
+
+        this.image = runImage1;
 
         // Keyboard event listeners
         window.removeEventListener("keydown", this.keydown); // Remove first to prevent duplication
@@ -80,7 +86,7 @@ export default class Player {
     update(gameSpeed, frameTimeDelta) {
         this.run(gameSpeed, frameTimeDelta);
         if (this.jumpPressed) {
-            this.image = this.stillImage;
+            this.image = this.jumpImage;
         }
         this.jump(frameTimeDelta);
     }
@@ -116,17 +122,14 @@ export default class Player {
     }
 
     /**
-     * Handle the player's running animation.
+     * Handle the player's running animation by iterating through running images.
      * @param {number} gameSpeed - The current game speed multiplier.
      * @param {number} frameTimeDelta - The time elapsed since the last frame update.
      */
     run(gameSpeed, frameTimeDelta) {
         if (this.walkAnimationTimer <= 0) {
-            if (this.image === this.dinoRunImages[0]) {
-                this.image = this.dinoRunImages[1];
-            } else {
-                this.image = this.dinoRunImages[0];
-            }
+            this.currentRunImageIndex = (this.currentRunImageIndex + 1) % this.runImages.length;
+            this.image = this.runImages[this.currentRunImageIndex];
             this.walkAnimationTimer = this.WALK_ANIMATION_TIMER;
         }
         this.walkAnimationTimer -= gameSpeed * frameTimeDelta;

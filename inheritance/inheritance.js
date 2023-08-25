@@ -21,10 +21,10 @@ const PLAYER_WIDTH = 88 / 1.75;
 const PLAYER_HEIGHT = 94 / 1.75;
 const MAX_JUMP_HEIGHT = GAME_HEIGHT;
 const MIN_JUMP_HEIGHT = 150;
-const GROUND_WIDTH = 859;
-const GROUND_HEIGHT = 2;
+const GROUND_WIDTH = 1280;
+const GROUND_HEIGHT = 200;
 const GROUND_AND_OBSTACLE_SPEED = 0.5;
-const CUTSCENE_INIT_SCORE = 25;
+const CUTSCENE_INIT_SCORE = 100;
 
 let OBSTACLE_CONFIG = [
     {width: 50, height: 75, image: "images/obstacle_1.png"},
@@ -253,18 +253,18 @@ function gameLoop(currentTime) {
         score.setHighScore();
     }
 
+    // Draw game objects
+    ground.draw();
+    obstacleController.draw();
+    player.draw();
+    score.draw();
+
     if (isCutscenePlaying) {
         displayCutscene();
         setupGameReset(5000);
         addObstacle(["images/obstacle_1.png", "images/fence.png"]);
         cutscenePassed = true;
      }
-
-     // Draw game objects
-     ground.draw();
-     obstacleController.draw();
-     player.draw();
-     score.draw();
  
      if (gameOver) {
          showGameOver();
