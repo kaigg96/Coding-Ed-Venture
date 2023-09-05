@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Code Editor</title>
+    <link rel="stylesheet" href="codemirror/codemirror.css">
+    <script src="codemirror/codemirror.js"></script>
+    <script src="codemirror/javascript.js"></script>
+
+    <style>
+    /* Style the grayed-out background */
+    body {
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    /* Style the code editor container */
+    #coding-container {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 5px;
+        width: 80%;
+        max-width: 800px; /* Adjust the maximum width as needed */
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    /* Style the "Run Code" button */
+    #run-code {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #0073e6;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Style the "Run Code" button on hover (optional) */
+    #run-code:hover {
+        background-color: #0058a6;
+    }
+    </style>
+
+</head>
+<body>
+    <div id="coding-container">
+        <div id="code-editor"></div>
+        <button id="run-code">Run Code</button>
+        <span class="close" id="exit-code">&times;</span>
+    </div>
+
+    <script>
+        let codeEditor;
+        
+        function initCodeEditor() {
+            codeEditor = CodeMirror(document.getElementById('code-editor'), {
+                mode: 'javascript',
+                lineNumbers: true,
+            });
+            codeEditor.focus();
+        }
+
+        initCodeEditor();
+
+        const runCodeButton = document.getElementById('run-code');
+        const exitCodeButton = document.getElementById('exit-code');
+
+        runCodeButton.addEventListener('click', () => {
+            const code = codeEditor.getValue();
+            try {
+                eval(code); // Execute the code (be cautious with this approach)
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+        exitCodeButton.addEventListener('click', () => {
+            window.location.href = "inheritance.html";
+        });
+
+    </script>
+</body>
+</html>

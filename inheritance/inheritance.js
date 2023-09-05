@@ -24,7 +24,7 @@ const MIN_JUMP_HEIGHT = 150;
 const GROUND_WIDTH = 1280;
 const GROUND_HEIGHT = 200;
 const GROUND_AND_OBSTACLE_SPEED = 0.5;
-const CUTSCENE_INIT_SCORE = 100;
+const CUTSCENE_INIT_SCORE = 10;
 
 let OBSTACLE_CONFIG = [
     {width: 50, height: 75, image: "images/obstacle_1.png"},
@@ -260,21 +260,18 @@ function gameLoop(currentTime) {
     score.draw();
 
     if (isCutscenePlaying) {
-        displayCutscene();
-        setupGameReset(5000);
-        addObstacle(["images/obstacle_1.png", "images/fence.png"]);
-        cutscenePassed = true;
-     }
+        window.location.href = "codingWindow.html";
+    }
  
-     if (gameOver) {
+    if (gameOver) {
          showGameOver();
-     }
+    }
  
-     if (waitingToStart) {
+    if (waitingToStart) {
          showStartGameText();
-     }
+    }
      
-     requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
  }
 
 // Calls method when it's ready to repaint the screen
